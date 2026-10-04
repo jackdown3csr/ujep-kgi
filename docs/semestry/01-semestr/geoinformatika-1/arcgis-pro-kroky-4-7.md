@@ -2,7 +2,6 @@
 tags:
   - GIS
   - ArcGIS Pro
-  - návod
 ---
 
 # ArcGIS Pro: návod ke krokům 4 až 7

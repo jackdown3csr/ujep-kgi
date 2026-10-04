@@ -7,8 +7,7 @@ Ahoj! Tohle jsou moje poznámky ze studia na FŽP. Klidně je používej, sdíle
 
 ## Jak se v tom vyznat
 
-- **[Semestry](semestry/index.md):** poznámky z přednášek a cvičení podle předmětů
-- **[Návody](navody/index.md):** postupy krok za krokem, třeba [ArcGIS Pro](navody/arcgis-pro/kroky-4-7.md)
+- **Předměty** najdeš v menu vlevo, poznámky z přednášek a cvičení jsou u nich
 - **Hledání** vpravo nahoře prohledá celou wiki
 
 ## Našel jsem chybu / chci něco doplnit
@@ -28,7 +27,7 @@ Otevři [nové hlášení (issue)](https://github.com/jackdown3csr/ujep-kgi/issu
 
 ### Přidat celou poznámku
 
-Postup a šablony jsou v [Jak přidávat poznámky](jak-pridavat.md). Novou poznámku pošli stejně jako opravu, přes pull request.
+Poznámky jsou Markdown soubory ve složce `docs/semestry/` (tahák je v [Jak psát poznámky](jak-pridavat.md)). Novou poznámku pošli stejně jako opravu, přes pull request.
 
 ## Pravidla
 

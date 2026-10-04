@@ -1,44 +1,26 @@
 ---
 import Zaklad from '../layouts/Zaklad.astro';
-import { strom, url, uryvek, pocetPoznamek, jeVyplneno } from '../lib/strom';
-import { ikona, type Ikona } from '../lib/ikony';
+import { strom, url, nazev, pocetPoznamek, jeVyplneno, datum, hezkeDatum } from '../lib/strom';
+import { ikona } from '../lib/ikony';
 import { nastaveni } from '../nastaveni';
 
 const { podle, vse } = await strom();
-const cislo = (n: number) => String(n).padStart(2, '0');
-const aktualni = podle.get(`semestry/${cislo(nastaveni.aktualniSemestr)}-semestr`);
-const predmety = aktualni?.deti.filter((d) => d.stranka) ?? [];
+const id = `semestry/${String(nastaveni.aktualniSemestr).padStart(2, '0')}-semestr`;
+const semestr = podle.get(id);
+const predmety = semestr?.deti.filter((d) => d.stranka) ?? [];
 
-const semestry = Array.from({ length: nastaveni.pocetSemestru }, (_, i) => {
-  const n = i + 1;
-  const u = podle.get(`semestry/${cislo(n)}-semestr`);
-  return {
-    n,
-    id: u?.id ?? 'semestry',
-    rocnik: Math.ceil(n / 2),
-    obdobi: n % 2 ? 'ZS' : 'LS',
-    stav: n < nastaveni.aktualniSemestr ? 'hotovo' : n === nastaveni.aktualniSemestr ? 'ted' : 'pozdeji',
-  };
-});
-
-const rychle: { id: string; ikona: Ikona; nazev: string; popis: string }[] = [
-  { id: 'studium/prehled', ikona: 'cepice', nazev: 'Přehled studia', popis: 'Program, kredity, milníky' },
-  { id: 'studium/harmonogram', ikona: 'kalendar', nazev: 'Harmonogram', popis: 'Zápis, výuka, zkouškové' },
-  { id: 'studium/zkousky', ikona: 'zkouska', nazev: 'Zkoušky', popis: 'Termíny a co se zkouší' },
-  { id: 'navody', ikona: 'kompas', nazev: 'Návody', popis: 'ArcGIS Pro a další postupy' },
-  { id: 'studium/odkazy', ikona: 'odkaz', nazev: 'Odkazy', popis: 'STAG, Moodle, data pro GIS' },
-  { id: 'zaverecna-prace', ikona: 'knihovna', nazev: 'Závěrečná práce', popis: 'Téma, plán, konzultace' },
-];
-
-const navody = vse.filter((p) => p.id.startsWith('navody/') && !p.id.endsWith('/index') && podle.get(p.id)?.deti.length === 0);
-const stitky = [...new Set(vse.filter((p) => !p.id.startsWith('sablony')).flatMap((p) => p.data.tags ?? []))].sort((a, b) => a.localeCompare(b, 'cs'));
+// Poslední poznámky podle data v hlavičce (datum: RRRR-MM-DD).
+const posledni = vse
+  .filter((p) => datum(p) && p.id.startsWith('semestry/'))
+  .sort((a, b) => datum(b).localeCompare(datum(a)))
+  .slice(0, 8)
+  .map((p) => ({ p, predmet: podle.get(p.id.slice(0, p.id.lastIndexOf('/')))?.nazev ?? '' }));
 ---
 <Zaklad aktivni="" siroke>
   <div class="domov" data-pagefind-ignore="all">
     <section class="uvod">
       <p class="nadtitulek">{nastaveni.podtitul}</p>
       <h1>{nastaveni.nazev}</h1>
-      <p class="perex">{nastaveni.popis} Všechno na jednom místě, od prvního zápisu po státnice.</p>
       <button type="button" class="velke-hledani" data-hledat>
         <span set:html={ikona('hledat')} />
         <span>Hledat v poznámkách…</span>
@@ -48,92 +30,34 @@ const stitky = [...new Set(vse.filter((p) => !p.id.startsWith('sablony')).flatMa
 
     <section class="blok">
       <div class="blok-hlava">
-        <h2>{nastaveni.aktualniSemestr}. semestr <span class="jemne">· právě běží</span></h2>
-        {aktualni && <a href={url(aktualni.id)} class="vice">Celý semestr <span set:html={ikona('dal', 16)} /></a>}
+        <h2>{semestr?.nazev ?? `${nastaveni.aktualniSemestr}. semestr`}</h2>
       </div>
-      {predmety.length > 0 ? (
-        <div class="karty predmety">
-          {predmety.map((u, i) => (
-            <a class="karta predmet" href={url(u.id)} style={`--odstin: ${(i * 47 + 150) % 360}`}>
-              <span class="predmet-pruh" />
-              <span class="predmet-meta">
-                {jeVyplneno(u.stranka!.data.zkratka) && <span class="cip">{u.stranka!.data.zkratka}</span>}
-                {jeVyplneno(u.stranka!.data.kredity) && <span class="jemne">{u.stranka!.data.kredity} kr.</span>}
-              </span>
-              <strong>{u.nazev}</strong>
-              <small>{pocetPoznamek(u)} {pocetPoznamek(u) === 1 ? 'poznámka' : pocetPoznamek(u) > 1 && pocetPoznamek(u) < 5 ? 'poznámky' : 'poznámek'}</small>
-            </a>
-          ))}
-        </div>
-      ) : (
-        <div class="prazdno">
-          <span class="prazdno-ikona" set:html={ikona('plus', 22)} />
-          <div>
-            <strong>Zatím tu nejsou žádné předměty</strong>
-            <p>Předmět je složka v <code>docs/semestry/{cislo(nastaveni.aktualniSemestr)}-semestr/</code> se souborem <code>index.md</code>. Nejrychleji ho založíš příkazem <code>python nastroje/nova.py predmet {nastaveni.aktualniSemestr} "Název předmětu"</code>. <a href={url('jak-pridavat')}>Jak přidávat poznámky</a></p>
-          </div>
-        </div>
-      )}
-    </section>
-
-    <section class="blok">
-      <h2>Cesta studiem</h2>
-      <ol class="cesta">
-        {semestry.map((s) => (
-          <li class={s.stav}>
-            <a href={url(s.id)}>
-              <span class="tecka">{s.stav === 'hotovo' ? '✓' : s.n}</span>
-              <span class="cesta-text"><strong>{s.n}. semestr</strong><small>{s.rocnik}. ročník · {s.obdobi}</small></span>
-            </a>
-          </li>
-        ))}
-        <li class="pozdeji cil">
-          <a href={url('zaverecna-prace')}>
-            <span class="tecka" set:html={ikona('cepice', 16)} />
-            <span class="cesta-text"><strong>Státnice</strong><small>a závěrečná práce</small></span>
-          </a>
-        </li>
-      </ol>
-    </section>
-
-    <section class="blok">
-      <h2>Rychle najdeš</h2>
-      <div class="dlazdice">
-        {rychle.map((r) => (
-          <a class="dlazdice-polozka" href={url(r.id)}>
-            <span class="dlazdice-ikona" set:html={ikona(r.ikona, 22)} />
-            <span><strong>{r.nazev}</strong><small>{r.popis}</small></span>
+      <div class="karty predmety">
+        {predmety.map((u, i) => (
+          <a class="karta predmet" href={url(u.id)} style={`--odstin: ${(i * 47 + 150) % 360}`}>
+            <span class="predmet-pruh" />
+            {jeVyplneno(u.stranka!.data.zkratka) && <span class="predmet-meta"><span class="cip">{u.stranka!.data.zkratka}</span></span>}
+            <strong>{u.nazev}</strong>
+            <small>{pocetPoznamek(u) === 0 ? 'Zatím bez poznámek' : `${pocetPoznamek(u)} ${pocetPoznamek(u) === 1 ? 'poznámka' : pocetPoznamek(u) < 5 ? 'poznámky' : 'poznámek'}`}</small>
           </a>
         ))}
       </div>
     </section>
 
-    <div class="dva-sloupce">
+    {posledni.length > 0 && (
       <section class="blok">
-        <div class="blok-hlava">
-          <h2>Návody</h2>
-          <a href={url('navody')} class="vice">Všechny <span set:html={ikona('dal', 16)} /></a>
-        </div>
+        <h2>Poslední poznámky</h2>
         <ul class="seznam">
-          {navody.map((p) => (
-            <li><a href={url(p.id)}><span set:html={ikona('soubor', 18)} /><span><strong>{podle.get(p.id)!.nazev}</strong><small>{uryvek(p, 90)}</small></span></a></li>
+          {posledni.map(({ p, predmet }) => (
+            <li><a href={url(p.id)}><span set:html={ikona('soubor', 18)} /><span><strong>{nazev(p)}</strong><small>{predmet} · {hezkeDatum(datum(p))}</small></span></a></li>
           ))}
         </ul>
       </section>
+    )}
 
-      <section class="blok">
-        <h2>Pro spolužáky</h2>
-        <div class="spoluzaci">
-          <span set:html={ikona('lide', 24)} />
-          <p>Poznámky jsou volně k použití. Našel jsi chybu nebo chceš něco doplnit? Pošli opravu přes GitHub, stačí pár kliknutí.</p>
-          <a class="tlacitko" href={url('spoluzaci')}>Jak přispět</a>
-        </div>
-        {stitky.length > 0 && (
-          <div class="mrak">
-            {stitky.map((t) => <a class="stitek" href={url(`stitky/${encodeURIComponent(t)}`)}>#{t}</a>)}
-          </div>
-        )}
-      </section>
-    </div>
+    <p class="pro-spoluzaky">
+      <span set:html={ikona('lide', 18)} />
+      <span>Poznámky jsou volně k použití. Našel jsi chybu? <a href={url('spoluzaci')}>Jak přispět</a></span>
+    </p>
   </div>
 </Zaklad>
