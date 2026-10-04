@@ -1,0 +1,89 @@
+---
+import '@fontsource-variable/inter';
+import 'katex/dist/katex.min.css';
+import '../styles/global.css';
+import Menu from '../components/Menu.astro';
+import Hledani from '../components/Hledani.astro';
+import { strom, url } from '../lib/strom';
+import { ikona } from '../lib/ikony';
+import { nastaveni } from '../nastaveni';
+
+interface Props { titulek?: string; popis?: string; aktivni?: string; siroke?: boolean }
+const { titulek, popis = nastaveni.popis, aktivni = '', siroke = false } = Astro.props;
+const { koren } = await strom();
+const plnyTitulek = titulek ? `${titulek} · ${nastaveni.nazev}` : `${nastaveni.nazev} · ${nastaveni.podtitul}`;
+---
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{plnyTitulek}</title>
+    <meta name="description" content={popis} />
+    <meta property="og:title" content={titulek ?? nastaveni.nazev} />
+    <meta property="og:description" content={popis} />
+    <link rel="icon" href={`${import.meta.env.BASE_URL.replace(/\/?$/, '/')}favicon.svg`} type="image/svg+xml" />
+    <script is:inline>
+      try {
+        const t = localStorage.getItem('tema');
+        if (t) document.documentElement.dataset.theme = t;
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <header class="hlavicka">
+      <button type="button" class="ikona-tlacitko jen-mobil" id="menu-tlacitko" aria-label="Menu" aria-controls="postranni" aria-expanded="false" set:html={ikona('menu')} />
+      <a href={url('')} class="logo">
+        <span class="logo-znak" set:html={ikona('list', 18)} />
+        <span><strong>{nastaveni.nazev}</strong><small>{nastaveni.podtitul}</small></span>
+      </a>
+      <button type="button" class="hledat-pole" data-hledat>
+        <span set:html={ikona('hledat', 16)} />
+        <span class="hledat-text">Hledat</span>
+        <kbd class="jen-desktop">Ctrl K</kbd>
+      </button>
+      <button type="button" class="ikona-tlacitko" id="tema" aria-label="Přepnout světlý / tmavý režim">
+        <span class="ikona-mesic" set:html={ikona('mesic')} />
+        <span class="ikona-slunce" set:html={ikona('slunce')} />
+      </button>
+    </header>
+
+    <div class:list={['rozlozeni', { siroke }]}>
+      <nav id="postranni" class="postranni" aria-label="Obsah wiki">
+        <a href={url('')} class:list={['domu', { aktivni: aktivni === '' }]}>Úvod</a>
+        <Menu uzly={koren.deti} aktivni={aktivni} />
+      </nav>
+      <div class="zavoj" id="zavoj" hidden></div>
+      <main id="obsah">
+        <slot />
+      </main>
+    </div>
+
+    <footer class="paticka">
+      <p>Neoficiální poznámky, bez záruky správnosti. Obsah pod licencí <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs">CC BY-SA 4.0</a>.</p>
+      <p><a href={nastaveni.repozitar}>Zdroj na GitHubu</a> · <a href={url('spoluzaci')}>Chceš přispět?</a></p>
+    </footer>
+
+    <Hledani />
+
+    <script>
+      const koren = document.documentElement;
+      const tmavy = () => koren.dataset.theme ? koren.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.getElementById('tema')!.addEventListener('click', () => {
+        const nove = tmavy() ? 'light' : 'dark';
+        koren.dataset.theme = nove;
+        try { localStorage.setItem('tema', nove); } catch {}
+      });
+
+      const tlacitko = document.getElementById('menu-tlacitko')!;
+      const zavoj = document.getElementById('zavoj')!;
+      const prepni = (otevrit: boolean) => {
+        document.body.classList.toggle('menu-otevrene', otevrit);
+        tlacitko.setAttribute('aria-expanded', String(otevrit));
+        zavoj.hidden = !otevrit;
+      };
+      tlacitko.addEventListener('click', () => prepni(!document.body.classList.contains('menu-otevrene')));
+      zavoj.addEventListener('click', () => prepni(false));
+    </script>
+  </body>
+</html>

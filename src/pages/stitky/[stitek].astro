@@ -1,0 +1,26 @@
+---
+import Zaklad from '../../layouts/Zaklad.astro';
+import { strom, url, nazev, uryvek, type Poznamka } from '../../lib/strom';
+
+export async function getStaticPaths() {
+  const { vse } = await strom();
+  const stitky = new Set(vse.flatMap((p) => p.data.tags ?? []));
+  return [...stitky].map((stitek) => ({
+    params: { stitek },
+    props: { stitek, stranky: vse.filter((p) => p.data.tags?.includes(stitek) && !p.id.startsWith('sablony')) },
+  }));
+}
+const { stitek, stranky } = Astro.props as { stitek: string; stranky: Poznamka[] };
+---
+<Zaklad titulek={`#${stitek}`} aktivni="stitky">
+  <article class="clanek">
+    <nav class="drobky"><a href={url('stitky')}>Štítky</a></nav>
+    <div class="prose"><h1>#{stitek}</h1></div>
+    <div class="karty">
+      {stranky.map((p) => (
+        <a class="karta" href={url(p.id)}><strong>{nazev(p)}</strong><span>{uryvek(p, 110)}</span></a>
+      ))}
+      {stranky.length === 0 && <p>Tímto štítkem je zatím označená jen šablona.</p>}
+    </div>
+  </article>
+</Zaklad>

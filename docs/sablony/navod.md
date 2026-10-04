@@ -1,4 +1,6 @@
 ---
+nazev: "Šablona: Návod"
+poradi: 5
 tags:
   - návod
 ---
@@ -14,7 +16,7 @@ tags:
 1. 
 2. 
 
-!!! warning "Častá chyba"
-    
+> [!WARNING] Častá chyba
+>
 
 ## Výsledek / kontrola

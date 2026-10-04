@@ -1,0 +1,29 @@
+---
+import { url, type Uzel } from '../lib/strom';
+import { ikona } from '../lib/ikony';
+
+interface Props { uzly: Uzel[]; aktivni: string; hloubka?: number }
+const { uzly, aktivni, hloubka = 0 } = Astro.props;
+const obsahuje = (u: Uzel) => aktivni === u.id || aktivni.startsWith(u.id + '/');
+---
+<ul class:list={['menu', `menu-${hloubka}`]}>
+  {uzly.map((u) => (
+    <li>
+      {u.deti.length === 0 ? (
+        <a href={url(u.id)} class:list={{ aktivni: aktivni === u.id }} aria-current={aktivni === u.id ? 'page' : undefined}>{u.nazev}</a>
+      ) : (
+        <details open={obsahuje(u) || hloubka === 0}>
+          <summary>
+            {u.stranka ? (
+              <a href={url(u.id)} class:list={{ aktivni: aktivni === u.id }} aria-current={aktivni === u.id ? 'page' : undefined}>{u.nazev}</a>
+            ) : (
+              <span>{u.nazev}</span>
+            )}
+            <span class="rozbalit" set:html={ikona('sipka', 16)} />
+          </summary>
+          <Astro.self uzly={u.deti} aktivni={aktivni} hloubka={hloubka + 1} />
+        </details>
+      )}
+    </li>
+  ))}
+</ul>

@@ -1,4 +1,6 @@
 ---
+nazev: "Šablona: Příprava na zkoušku"
+poradi: 4
 tags:
   - zkouška
 ---
@@ -19,8 +21,12 @@ tags:
 
 ## Otázky na procvičení
 
-??? question "{{ otázka }}"
-    {{ odpověď }}
+<details>
+<summary>{{ otázka }}</summary>
+
+{{ odpověď }}
+
+</details>
 
 ## Po zkoušce
 

@@ -1,4 +1,6 @@
 ---
+nazev: "Šablona: Přednáška"
+poradi: 2
 tags:
   - přednáška
 ---
@@ -17,8 +19,8 @@ tags:
 
 ## Pojmy
 
-Pojem
-:   vysvětlení (obecné pojmy přidej i do [slovníčku](../../../studium/slovnicek.md))
+**Pojem**  
+vysvětlení (obecné pojmy přidej i do [slovníčku](../../../studium/slovnicek.md))
 
 ## Otázky a nejasnosti
 

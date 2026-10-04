@@ -2,8 +2,8 @@
 
 Ahoj! Tohle jsou moje poznámky ze studia na FŽP. Klidně je používej, sdílej a pomoz je vylepšit.
 
-!!! warning "Neoficiální poznámky"
-    Nejsou to materiály fakulty ani vyučujících. Můžou obsahovat chyby nebo být zastaralé. Co je důležité (podmínky zápočtu, termíny, zadání), si vždycky ověř ve STAGu, na Moodlu nebo u vyučujícího.
+> [!WARNING] Neoficiální poznámky
+> Nejsou to materiály fakulty ani vyučujících. Můžou obsahovat chyby nebo být zastaralé. Co je důležité (podmínky zápočtu, termíny, zadání), si vždycky ověř ve STAGu, na Moodlu nebo u vyučujícího.
 
 ## Jak se v tom vyznat
 
@@ -15,20 +15,20 @@ Ahoj! Tohle jsou moje poznámky ze studia na FŽP. Klidně je používej, sdíle
 
 Stačí účet na GitHubu (zdarma). Vyber, co ti víc vyhovuje:
 
-=== "Napsat, co je špatně"
+### Napsat, co je špatně
 
-    Otevři [nové hlášení (issue)](https://github.com/jackdown3csr/ujep-kgi/issues/new), napiš, na které stránce a co je špatně. Opravím to.
+Otevři [nové hlášení (issue)](https://github.com/jackdown3csr/ujep-kgi/issues/new), napiš, na které stránce a co je špatně. Opravím to.
 
-=== "Opravit to rovnou"
+### Opravit to rovnou
 
-    1. Na stránce klikni na **tužku** vpravo nahoře nad nadpisem.
-    2. GitHub ti nabídne vytvořit vlastní kopii (fork). Potvrď.
-    3. Uprav text a dole klikni **Propose changes**, pak **Create pull request**.
-    4. Já změnu zkontroluju a přidám do wiki. Tvoje jméno zůstane v historii změn.
+1. Na stránce klikni na **Upravit na GitHubu** (pod nadpisem).
+2. GitHub ti nabídne vytvořit vlastní kopii (fork). Potvrď.
+3. Uprav text a dole klikni **Propose changes**, pak **Create pull request**.
+4. Já změnu zkontroluju a přidám do wiki. Tvoje jméno zůstane v historii změn.
 
-=== "Přidat celou poznámku"
+### Přidat celou poznámku
 
-    Postup a šablony jsou v [Jak přidávat poznámky](jak-pridavat.md). Novou poznámku pošli stejně jako opravu, přes pull request.
+Postup a šablony jsou v [Jak přidávat poznámky](jak-pridavat.md). Novou poznámku pošli stejně jako opravu, přes pull request.
 
 ## Pravidla
 

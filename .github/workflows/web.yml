@@ -1,5 +1,7 @@
-name: Publikovat wiki
+name: Publikovat wiki na GitHub Pages
 
+# Hlavní web běží na Vercelu. Tahle kopie na GitHub Pages zůstává,
+# aby fungoval i starý odkaz jackdown3csr.github.io/ujep-kgi.
 on:
   push:
     branches: [main]
@@ -19,14 +21,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-node@v5
         with:
-          python-version: "3.12"
-      - run: pip install -r requirements.txt
-      - run: mkdocs build --strict
-      - uses: actions/upload-pages-artifact@v3
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          BASE_PATH: /ujep-kgi
+          SITE_URL: https://jackdown3csr.github.io
+      - uses: actions/upload-pages-artifact@v4
         with:
-          path: site
+          path: dist
   deploy:
     needs: build
     runs-on: ubuntu-latest

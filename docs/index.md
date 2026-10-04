@@ -2,8 +2,8 @@
 
 Studijní poznámky, návody a přehledy z **Fakulty životního prostředí UJEP** v Ústí nad Labem. Píšu je hlavně pro sebe, ale klidně je používej taky.
 
-!!! info "Pro spolužáky"
-    Jsou to neoficiální poznámky a můžou v nich být chyby. Když nějakou najdeš nebo chceš něco doplnit, mrkni na [Pro spolužáky](spoluzaci.md).
+> [!NOTE] Pro spolužáky
+> Jsou to neoficiální poznámky a můžou v nich být chyby. Když nějakou najdeš nebo chceš něco doplnit, mrkni na [Pro spolužáky](spoluzaci.md).
 
 ## Kde co je
 
@@ -21,5 +21,5 @@ Studijní poznámky, návody a přehledy z **Fakulty životního prostředí UJE
 - [ ] Zapsat předměty aktuálního semestru
 - [x] Návod [ArcGIS Pro, kroky 4 až 7](navody/arcgis-pro/kroky-4-7.md)
 
-!!! tip "Jak přidat poznámku"
-    Zkopíruj [šablonu](sablony/index.md) do správné složky, nebo spusť `python nastroje/nova.py`. Podrobně v [Jak přidávat poznámky](jak-pridavat.md).
+> [!TIP] Jak přidat poznámku
+> Zkopíruj [šablonu](sablony/index.md) do správné složky, nebo spusť `python nastroje/nova.py`. Podrobně v [Jak přidávat poznámky](jak-pridavat.md).

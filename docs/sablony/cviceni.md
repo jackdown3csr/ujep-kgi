@@ -1,4 +1,6 @@
 ---
+nazev: "Šablona: Cvičení"
+poradi: 3
 tags:
   - cvičení
 ---

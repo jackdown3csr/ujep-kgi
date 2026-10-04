@@ -1,3 +1,7 @@
+---
+poradi: 2
+---
+
 # Harmonogram akademického roku
 
 Přesné termíny jsou v harmonogramu FŽP na webu fakulty. Sem si opiš ty, které se mě týkají.

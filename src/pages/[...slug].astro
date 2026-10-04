@@ -1,0 +1,66 @@
+---
+import { render } from 'astro:content';
+import Zaklad from '../layouts/Zaklad.astro';
+import { strom, url, nazev, uryvek, odkazNaUpravu, predci, pocetPoznamek, jeVyplneno, type Poznamka } from '../lib/strom';
+import { ikona } from '../lib/ikony';
+
+export async function getStaticPaths() {
+  const { vse } = await strom();
+  return vse.filter((p) => p.id !== 'index').map((p) => ({ params: { slug: p.id }, props: { p } }));
+}
+
+const { p } = Astro.props as { p: Poznamka };
+const { Content, headings } = await render(p);
+const { podle } = await strom();
+const uzel = podle.get(p.id)!;
+const titulek = nazev(p);
+const drobky = predci(p.id).map((id) => ({ id, nazev: podle.get(id)?.nazev ?? id }));
+const obsah = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const deti = uzel.deti;
+const jePredmet = /^semestry\/[^/]+\/[^/]+$/.test(p.id);
+---
+<Zaklad titulek={titulek} popis={uryvek(p) || undefined} aktivni={p.id}>
+  <div class="stranka">
+    <article class="clanek" data-pagefind-body>
+      <nav class="drobky" aria-label="Umístění" data-pagefind-ignore>
+        <a href={url('')}>Úvod</a>
+        {drobky.map((d) => (<><span set:html={ikona('sipka', 14)} /><a href={url(d.id)}>{d.nazev}</a></>))}
+      </nav>
+
+      <div class="meta" data-pagefind-ignore>
+        {jePredmet && jeVyplneno(p.data.zkratka) && <span class="cip">{p.data.zkratka}</span>}
+        {jePredmet && jeVyplneno(p.data.kredity) && <span class="cip">{p.data.kredity} kr.</span>}
+        {p.data.tags?.map((t) => <a class="stitek" href={url(`stitky/${encodeURIComponent(t)}`)} data-pagefind-filter="štítek">#{t}</a>)}
+        <a class="upravit" href={odkazNaUpravu(p)} target="_blank" rel="noopener"><span set:html={ikona('tuzka', 15)} />Upravit na GitHubu</a>
+      </div>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {deti.length > 0 && (
+        <section class="podstranky" data-pagefind-ignore>
+          <h2>{jePredmet ? 'Poznámky v předmětu' : 'V této sekci'}</h2>
+          <div class="karty">
+            {deti.map((d) => (
+              <a class="karta" href={url(d.id)}>
+                <strong>{d.nazev}</strong>
+                {d.stranka && uryvek(d.stranka) && <span>{uryvek(d.stranka, 110)}</span>}
+                {d.deti.length > 0 && <small>{pocetPoznamek(d)} {pocetPoznamek(d) === 1 ? 'stránka' : pocetPoznamek(d) < 5 ? 'stránky' : 'stránek'}</small>}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </article>
+
+    {obsah.length > 1 && (
+      <aside class="toc" aria-label="Na této stránce" data-pagefind-ignore>
+        <strong>Na této stránce</strong>
+        <ul>
+          {obsah.map((h) => <li class={`toc-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>)}
+        </ul>
+      </aside>
+    )}
+  </div>
+</Zaklad>
