@@ -34,7 +34,7 @@ theme:
         name: Světlý režim
 plugins:
   - search:
-      lang: [cs, en]
+      lang: en
   - tags
 markdown_extensions:
   - admonition
@@ -59,6 +59,10 @@ markdown_extensions:
       alternate_style: true
 extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+validation:
+  links:
+    not_found: info
+
 nav:
   - Úvod: index.md
   - Studium:
