@@ -1,0 +1,90 @@
+site_name: Moje studium na UJEP
+site_description: Domácí wiki se studijními poznámkami (FŽP UJEP)
+docs_dir: docs
+site_url: https://jackdown3csr.github.io/ujep-kgi/
+repo_url: https://github.com/jackdown3csr/ujep-kgi
+repo_name: ujep-kgi
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  language: cs
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Tmavý režim
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Světlý režim
+plugins:
+  - search:
+      lang: [cs, en]
+  - tags
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tabbed:
+      alternate_style: true
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+nav:
+  - Úvod: index.md
+  - Studium:
+      - studium/index.md
+      - Přehled studia: studium/prehled.md
+      - Harmonogram roku: studium/harmonogram.md
+      - Zkoušky a zápočty: studium/zkousky.md
+      - Užitečné odkazy: studium/odkazy.md
+      - Slovníček: studium/slovnicek.md
+  - Semestry:
+      - semestry/index.md
+      - 1. semestr: semestry/01-semestr/index.md
+      - 2. semestr: semestry/02-semestr/index.md
+      - 3. semestr: semestry/03-semestr/index.md
+      - 4. semestr: semestry/04-semestr/index.md
+      - 5. semestr: semestry/05-semestr/index.md
+      - 6. semestr: semestry/06-semestr/index.md
+  - Návody:
+      - navody/index.md
+      - ArcGIS Pro: navody/arcgis-pro/kroky-4-7.md
+  - Závěrečná práce: zaverecna-prace/index.md
+  - Šablony:
+      - sablony/index.md
+      - Předmět: sablony/predmet.md
+      - Přednáška: sablony/prednaska.md
+      - Cvičení: sablony/cviceni.md
+      - Příprava na zkoušku: sablony/zkouska.md
+      - Návod: sablony/navod.md
+  - Jak přidávat poznámky: jak-pridavat.md
