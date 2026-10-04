@@ -2,9 +2,9 @@
 
 ## Aktuální zkouškové
 
-| Předmět | Typ | Termín | Místnost | Stav | Výsledek | Poznámky ke zkoušce |
-|---|---|---|---|---|---|---|
-| | Zk / Zp / KZ | | | přihlášen / splněno / opravný | | [odkaz](../semestry/index.md) |
+| Předmět | Typ | Termín | Místnost | Forma | Poznámky ke zkoušce |
+|---|---|---|---|---|---|
+| | Zk / Zp / KZ | | | písemná / ústní | [odkaz](../semestry/index.md) |
 
 ## Co fungovalo
 

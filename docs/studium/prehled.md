@@ -10,7 +10,6 @@
 | Typ / forma | _bakalářský / navazující magisterský · prezenční / kombinovaná_ |
 | Rok nástupu | _doplnit_ |
 | Standardní doba studia | _3 roky (6 semestrů)_ |
-| Osobní číslo (STAG) | _nepsat sem, pokud je repozitář veřejný_ |
 
 ## Pravidla, která je dobré znát
 
@@ -23,9 +22,9 @@ Ověř aktuální znění ve Studijním a zkušebním řádu UJEP a v opatření
 
 ## Studijní plán a kredity
 
-Průběžně vyplňuj podle IS/STAG. Stav: ✅ splněno · 🟡 probíhá · ❌ nesplněno · ⏳ zapsáno na později
+Průběžně vyplňuj podle IS/STAG. Wiki je veřejná, takže známky sem nepiš (ty jsou ve STAGu). Stav: ✅ splněno · 🟡 probíhá · ❌ nesplněno · ⏳ zapsáno na později
 
-| Sem. | Předmět | Zkratka | Typ | Kr. | Ukončení | Stav | Známka |
+| Sem. | Předmět | Zkratka | Typ | Kr. | Ukončení | Stav | Poznámky |
 |---|---|---|---|---|---|---|---|
 | 1 | _příklad: Geografické informační systémy_ | _KGI/GIS_ | A | 5 | Zp+Zk | 🟡 | |
 | | | | | | | | |

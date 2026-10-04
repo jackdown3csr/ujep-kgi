@@ -36,4 +36,4 @@ tags:
 
 ## Po skončení
 
-Známka: · Co se z předmětu hodí dál:
+Co se z předmětu hodí dál:

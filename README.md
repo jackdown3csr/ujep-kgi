@@ -1,6 +1,10 @@
-# Moje studium na UJEP
+# Poznámky ze studia na FŽP UJEP
 
-Osobní wiki se studijními poznámkami z **Fakulty životního prostředí UJEP**. Psaná v Markdownu, takže se dá číst přímo tady na GitHubu, v Obsidianu, nebo jako web přes GitHub Pages (MkDocs Material, s hledáním a tmavým režimem).
+**Web: https://jackdown3csr.github.io/ujep-kgi/**
+
+Neoficiální studijní poznámky a návody z **Fakulty životního prostředí UJEP**. Chceš něco opravit nebo doplnit? Viz [Pro spolužáky](docs/spoluzaci.md).
+
+Wiki se studijními poznámkami Psaná v Markdownu, takže se dá číst přímo tady na GitHubu, v Obsidianu, nebo jako web přes GitHub Pages (MkDocs Material, s hledáním a tmavým režimem).
 
 **Začni tady:** [docs/index.md](docs/index.md)
 
@@ -29,4 +33,9 @@ pip install -r requirements.txt && mkdocs serve    # náhled na http://127.0.0.1
 ## Web (GitHub Pages)
 
 Po každém pushi do `main` se web sestaví sám (`.github/workflows/web.yml`). Jednorázově je potřeba zapnout **Settings → Pages → Source: GitHub Actions**.
+
+## Licence
+
+Obsah je pod licencí [CC BY-SA 4.0](LICENSE): můžeš ho sdílet a upravovat, když uvedeš autora a stejnou licenci.
+
 Repozitář je veřejný: nepiš sem osobní údaje (osobní číslo, hesla, kontakty na spolužáky) ani materiály, které vyučující nechtějí šířit.

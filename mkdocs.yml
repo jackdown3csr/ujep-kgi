@@ -1,5 +1,5 @@
-site_name: Moje studium na UJEP
-site_description: Domácí wiki se studijními poznámkami (FŽP UJEP)
+site_name: Poznámky ze studia na FŽP UJEP
+site_description: Neoficiální studijní poznámky a návody z Fakulty životního prostředí UJEP
 docs_dir: docs
 site_url: https://jackdown3csr.github.io/ujep-kgi/
 repo_url: https://github.com/jackdown3csr/ujep-kgi
@@ -32,6 +32,8 @@ theme:
       toggle:
         icon: material/weather-sunny
         name: Světlý režim
+copyright: Obsah je pod licencí <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs">CC BY-SA 4.0</a> · neoficiální poznámky, bez záruky správnosti
+
 plugins:
   - search:
       lang: en
@@ -92,3 +94,4 @@ nav:
       - Příprava na zkoušku: sablony/zkouska.md
       - Návod: sablony/navod.md
   - Jak přidávat poznámky: jak-pridavat.md
+  - Pro spolužáky: spoluzaci.md

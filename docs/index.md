@@ -1,6 +1,9 @@
-# Moje studium na UJEP
+# Poznámky ze studia na FŽP UJEP
 
-Osobní wiki pro studium na **Fakultě životního prostředí UJEP** v Ústí nad Labem. Všechno, co se ve škole naučím, si sem zapíšu tak, abych to za rok (a u státnic) zase našel.
+Studijní poznámky, návody a přehledy z **Fakulty životního prostředí UJEP** v Ústí nad Labem. Píšu je hlavně pro sebe, ale klidně je používej taky.
+
+!!! info "Pro spolužáky"
+    Jsou to neoficiální poznámky a můžou v nich být chyby. Když nějakou najdeš nebo chceš něco doplnit, mrkni na [Pro spolužáky](spoluzaci.md).
 
 ## Kde co je
 

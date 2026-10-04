@@ -30,7 +30,4 @@
 
 ## Lidé a kontakty
 
-| Kdo | Role | Kontakt | Konzultační hodiny |
-|---|---|---|---|
-| | studijní referentka | | |
-| | vedoucí katedry | | |
+Kontakty na vyučující a studijní oddělení hledej v IS/STAG a na webu fakulty. Osobní kontakty (telefony, soukromé e-maily) sem nepiš, wiki je veřejná.
