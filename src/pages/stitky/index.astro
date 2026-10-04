@@ -1,0 +1,16 @@
+---
+import Zaklad from '../../layouts/Zaklad.astro';
+import { strom, url } from '../../lib/strom';
+const { vse } = await strom();
+const pocty = new Map<string, number>();
+vse.filter((p) => !p.id.startsWith('sablony')).forEach((p) => p.data.tags?.forEach((t) => pocty.set(t, (pocty.get(t) ?? 0) + 1)));
+const stitky = [...pocty].sort((a, b) => a[0].localeCompare(b[0], 'cs'));
+---
+<Zaklad titulek="Štítky" aktivni="stitky">
+  <article class="clanek">
+    <div class="prose"><h1>Štítky</h1></div>
+    <div class="mrak">
+      {stitky.map(([t, n]) => <a class="stitek velky" href={url(`stitky/${encodeURIComponent(t)}`)}>#{t} <small>{n}</small></a>)}
+    </div>
+  </article>
+</Zaklad>

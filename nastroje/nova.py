@@ -26,6 +26,8 @@ def slug(text: str) -> str:
 
 def vypln(sablona: str, hodnoty: dict) -> str:
     text = (SABLONY / f"{sablona}.md").read_text(encoding="utf-8")
+    # název a pořadí v hlavičce patří jen šabloně samotné
+    text = re.sub(r"^(nazev|poradi): .*\n", "", text, flags=re.M)
     for klic, hodnota in hodnoty.items():
         text = re.sub(r"\{\{ " + re.escape(klic) + r" \}\}", hodnota, text)
     return text

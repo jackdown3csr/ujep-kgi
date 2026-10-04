@@ -22,4 +22,4 @@ semestry/
 | [5. semestr](05-semestr/index.md) | ZS 20__/__ | | |
 | [6. semestr](06-semestr/index.md) | LS 20__/__ | | |
 
-Navazující magisterské studium: přidej složky `07-semestr` až `10-semestr` a doplň je do `mkdocs.yml`.
+Navazující magisterské studium: přidej složky `07-semestr` až `10-semestr`, v menu se objeví samy.

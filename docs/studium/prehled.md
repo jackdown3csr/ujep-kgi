@@ -1,3 +1,7 @@
+---
+poradi: 1
+---
+
 # Přehled studia
 
 ## Základní údaje

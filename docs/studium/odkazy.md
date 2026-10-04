@@ -1,7 +1,11 @@
+---
+poradi: 4
+---
+
 # Užitečné odkazy
 
-!!! note
-    Adresy jsem nemohl ověřit; pokud některá nefunguje, oprav ji tady.
+> [!NOTE]
+> Adresy jsem nemohl ověřit; pokud některá nefunguje, oprav ji tady.
 
 ## Univerzita a fakulta
 

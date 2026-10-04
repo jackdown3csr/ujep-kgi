@@ -1,4 +1,8 @@
 ---
+nazev: "Šablona: Předmět"
+poradi: 1
+zkratka: "{{ KAT/ZKR }}"
+kredity: "{{ 5 }}"
 tags:
   - předmět
 ---

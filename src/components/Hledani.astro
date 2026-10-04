@@ -1,0 +1,67 @@
+---
+import { ikona } from '../lib/ikony';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+<dialog id="hledani" class="hledani" aria-label="Hledání">
+  <div class="hledani-hlava">
+    <strong>Hledat v poznámkách</strong>
+    <button type="button" class="ikona-tlacitko" data-zavrit aria-label="Zavřít" set:html={ikona('zavrit')} />
+  </div>
+  <div id="hledani-vysledky" data-base={base}></div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById('hledani') as HTMLDialogElement;
+  const cil = document.getElementById('hledani-vysledky')!;
+  let nacteno = false;
+
+  async function otevrit() {
+    dialog.showModal();
+    if (!nacteno) {
+      nacteno = true;
+      const base = cil.dataset.base!;
+      const css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = `${base}pagefind/pagefind-ui.css`;
+      document.head.append(css);
+      try {
+        await new Promise((hotovo, chyba) => {
+          const s = document.createElement('script');
+          s.src = `${base}pagefind/pagefind-ui.js`;
+          s.onload = hotovo;
+          s.onerror = chyba;
+          document.head.append(s);
+        });
+        // @ts-ignore
+        new window.PagefindUI({
+          element: cil,
+          showSubResults: true,
+          showImages: false,
+          autofocus: true,
+          translations: {
+            placeholder: 'Hledat… (např. Definition Query)',
+            zero_results: 'Pro „[SEARCH_TERM]“ nic nenalezeno',
+            many_results: '[COUNT] výsledků pro „[SEARCH_TERM]“',
+            one_result: '1 výsledek pro „[SEARCH_TERM]“',
+            load_more: 'Načíst další',
+            clear_search: 'Vymazat',
+          },
+        });
+      } catch {
+        cil.innerHTML = '<p class="hledani-chyba">Hledání funguje až na sestaveném webu (<code>npm run build</code>).</p>';
+      }
+    }
+    setTimeout(() => (cil.querySelector('input') as HTMLInputElement | null)?.focus(), 50);
+  }
+
+  document.querySelectorAll('[data-hledat]').forEach((b) => b.addEventListener('click', otevrit));
+  dialog.querySelector('[data-zavrit]')!.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+  document.addEventListener('keydown', (e) => {
+    const vPoli = (e.target as HTMLElement).closest('input, textarea');
+    if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !vPoli)) {
+      e.preventDefault();
+      otevrit();
+    }
+  });
+</script>
