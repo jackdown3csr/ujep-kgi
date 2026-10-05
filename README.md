@@ -1,28 +1,31 @@
 # Poznámky ze studia na FŽP UJEP
 
-Neoficiální studijní poznámky a návody z **Fakulty životního prostředí UJEP**. Chceš něco opravit nebo doplnit? Viz [Pro spolužáky](docs/spoluzaci.md).
+Zápisky z přednášek a cvičení, obor Aplikovaná geoinformatika na **Fakultě životního prostředí UJEP**. Chceš něco opravit nebo doplnit? Viz [Pro spolužáky](docs/spoluzaci.md).
 
 Poznámky jsou obyčejné Markdown soubory ve složce `docs/`, takže se dají číst a psát přímo tady na GitHubu, v Obsidianu nebo ve VS Code. Web nad nimi je postavený v [Astru](https://astro.build) a běží na Vercelu.
+
+## Psaní poznámek
+
+Na webu: dole v patičce **Přihlásit k úpravám** (jednou, s přístupovým klíčem z GitHubu), pak u předmětu **Nová přednáška / Nové cvičení** nebo u poznámky **Upravit**. Editor ukládá rovnou sem do repozitáře a web se sám aktualizuje.
 
 ## Struktura
 
 ```
-docs/                    ← všechny poznámky (Markdown)
-  studium/               přehled studia, harmonogram, zkoušky, odkazy, slovníček
-  semestry/01-semestr/   poznámky po semestrech → složka pro každý předmět
-  navody/                opakovatelné postupy (ArcGIS Pro, …)
-  zaverecna-prace/       bakalářská / diplomová práce
-  sablony/               šablony nových poznámek
-nastroje/nova.py         založí poznámku ze šablony
-src/                     web (vzhled, úvodní stránka, menu)
-src/nastaveni.ts         název webu, aktuální semestr
+docs/semestry/01-semestr/          semestr
+  geoinformatika-1/index.md        předmět (zkratka v hlavičce)
+  geoinformatika-1/01-prednaska.md poznámka (datum v hlavičce)
+  geoinformatika-1/obrazky/        obrázky k poznámkám
+sablony/                           šablony nové přednášky, cvičení a předmětu
+nastroje/nova.py                   založí poznámku ze šablony z příkazové řádky
+src/                               web (Astro), editor je v src/pages/editor.astro
+src/nastaveni.ts                   název webu, aktuální semestr
 ```
 
 ## Rychlé příkazy
 
 ```bash
-python nastroje/nova.py predmet 1 "Geografické informační systémy"
-python nastroje/nova.py prednaska 1 "Geografické informační systémy" 1 "Úvod do GIS"
+python nastroje/nova.py prednaska 1 geoinformatika-1 3 "Souřadnicové systémy"
+python nastroje/nova.py predmet 2 "KGI/4GIF2" "Geoinformatika 2"
 
 npm install
 npm run dev        # náhled na http://localhost:4321

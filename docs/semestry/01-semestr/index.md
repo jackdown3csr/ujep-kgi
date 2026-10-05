@@ -1,20 +1,5 @@
-# 1. semestr
+---
+nazev: 1. semestr
+---
 
-**Období:** zimní semestr 20__/20__
-**Cíl kreditů:** 30
-
-## Předměty
-
-| Předmět | Zkratka | Kr. | Ukončení | Vyučující | Poznámky |
-|---|---|---|---|---|---|
-| | | | | | |
-
-## Rozvrh
-
-| Den | Čas | Předmět | Typ | Místnost |
-|---|---|---|---|---|
-| Po | | | | |
-
-## Shrnutí na konci semestru
-
-Co šlo dobře, co příště jinak, které poznámky se budou hodit dál.
+# 1. semestr · ZS 2026/27

@@ -10,7 +10,9 @@ import { nastaveni } from '../nastaveni';
 
 interface Props { titulek?: string; popis?: string; aktivni?: string; siroke?: boolean }
 const { titulek, popis = nastaveni.popis, aktivni = '', siroke = false } = Astro.props;
-const { koren } = await strom();
+const { koren, podle } = await strom();
+// V menu jsou semestry rovnou nahoře, pod nimi ostatní stránky.
+const menu = [...(podle.get('semestry')?.deti ?? []), ...koren.deti.filter((u) => u.id !== 'semestry')];
 const plnyTitulek = titulek ? `${titulek} · ${nastaveni.nazev}` : `${nastaveni.nazev} · ${nastaveni.podtitul}`;
 ---
 <!doctype html>
@@ -27,6 +29,7 @@ const plnyTitulek = titulek ? `${titulek} · ${nastaveni.nazev}` : `${nastaveni.
       try {
         const t = localStorage.getItem('tema');
         if (t) document.documentElement.dataset.theme = t;
+        if (localStorage.getItem('gh-token')) document.documentElement.dataset.upravy = '';
       } catch {}
     </script>
   </head>
@@ -51,7 +54,7 @@ const plnyTitulek = titulek ? `${titulek} · ${nastaveni.nazev}` : `${nastaveni.
     <div class:list={['rozlozeni', { siroke }]}>
       <nav id="postranni" class="postranni" aria-label="Obsah wiki">
         <a href={url('')} class:list={['domu', { aktivni: aktivni === '' }]}>Úvod</a>
-        <Menu uzly={koren.deti} aktivni={aktivni} />
+        <Menu uzly={menu} aktivni={aktivni} />
       </nav>
       <div class="zavoj" id="zavoj" hidden></div>
       <main id="obsah">
@@ -61,10 +64,18 @@ const plnyTitulek = titulek ? `${titulek} · ${nastaveni.nazev}` : `${nastaveni.
 
     <footer class="paticka">
       <p>Neoficiální poznámky, bez záruky správnosti. Obsah pod licencí <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.cs">CC BY-SA 4.0</a>.</p>
-      <p><a href={nastaveni.repozitar}>Zdroj na GitHubu</a> · <a href={url('spoluzaci')}>Chceš přispět?</a></p>
+      <p>
+        <a href={nastaveni.repozitar}>Zdroj na GitHubu</a> · <a href={url('spoluzaci')}>Chceš přispět?</a> ·
+        <a class="jen-host" href={`${url('editor')}?prihlasit`}>Přihlásit k úpravám</a>
+        <button type="button" class="jen-autor odkazove" id="odhlasit">Odhlásit z úprav</button>
+      </p>
     </footer>
 
     <Hledani />
+
+    <script>
+      import '../scripts/nastroje';
+    </script>
 
     <script>
       const koren = document.documentElement;
@@ -82,6 +93,11 @@ const plnyTitulek = titulek ? `${titulek} · ${nastaveni.nazev}` : `${nastaveni.
         tlacitko.setAttribute('aria-expanded', String(otevrit));
         zavoj.hidden = !otevrit;
       };
+      document.getElementById('odhlasit')?.addEventListener('click', () => {
+        try { localStorage.removeItem('gh-token'); } catch {}
+        delete koren.dataset.upravy;
+      });
+
       tlacitko.addEventListener('click', () => prepni(!document.body.classList.contains('menu-otevrene')));
       zavoj.addEventListener('click', () => prepni(false));
     </script>

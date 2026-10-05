@@ -1,0 +1,79 @@
+---
+import { readFileSync } from 'node:fs';
+import Zaklad from '../layouts/Zaklad.astro';
+import { ikona } from '../lib/ikony';
+import { nastaveni } from '../nastaveni';
+
+const sablony = {
+  prednaska: readFileSync('sablony/prednaska.md', 'utf8'),
+  cviceni: readFileSync('sablony/cviceni.md', 'utf8'),
+};
+const konfigurace = {
+  vlastnik: nastaveni.vlastnik,
+  repozitar: nastaveni.nazevRepozitare,
+  vetev: nastaveni.vetev,
+  base: import.meta.env.BASE_URL.replace(/\/?$/, '/'),
+  sablony,
+};
+const novyKlic =
+  `https://github.com/settings/personal-access-tokens/new?name=${encodeURIComponent('Editor poznámek')}` +
+  `&description=${encodeURIComponent('Úpravy poznámek na webu')}&target_name=${nastaveni.vlastnik}&expires_in=366&contents=write`;
+---
+<Zaklad titulek="Editor" aktivni="editor" siroke>
+  <script type="application/json" id="konfigurace" set:html={JSON.stringify(konfigurace)} />
+
+  <section id="prihlaseni" class="prihlaseni" hidden>
+    <h1>Přihlášení k úpravám</h1>
+    <p>Poznámky se ukládají rovnou do repozitáře na GitHubu. K tomu editor potřebuje přístupový klíč. Stačí ho zadat jednou, tenhle prohlížeč si ho zapamatuje.</p>
+    <ol>
+      <li>Otevři <a href={novyKlic} target="_blank" rel="noopener">vytvoření klíče na GitHubu</a> (formulář je předvyplněný).</li>
+      <li>U <strong>Repository access</strong> vyber <strong>Only select repositories</strong> → <code>{nastaveni.nazevRepozitare}</code>.</li>
+      <li>U <strong>Permissions → Contents</strong> musí být <strong>Read and write</strong>.</li>
+      <li>Klikni na <strong>Generate token</strong>, zkopíruj ho a vlož sem:</li>
+    </ol>
+    <form id="prihlaseni-form" class="prihlaseni-form">
+      <input id="klic" type="password" autocomplete="off" placeholder="github_pat_…" required />
+      <button type="submit" class="tlacitko-mensi hlavni">Přihlásit</button>
+    </form>
+    <p id="prihlaseni-chyba" class="chyba" hidden></p>
+    <p class="jemne">Klíč zůstane jen v tomhle prohlížeči a umí měnit jen tenhle repozitář. Na cizím počítači se po práci odhlas (dole v patičce).</p>
+  </section>
+
+  <section id="pracovni" class="pracovni" hidden>
+    <div class="editor-hlava">
+      <div class="editor-nazev">
+        <a id="zpet" class="tlacitko-mensi" href={konfigurace.base}><span set:html={ikona('sipka', 16)} style="transform: rotate(180deg)" />Zpět</a>
+        <code id="cesta"></code>
+      </div>
+      <div class="editor-akce">
+        <span id="stav" class="stav" role="status"></span>
+        <button type="button" id="smazat" class="tlacitko-mensi" hidden>Smazat</button>
+        <button type="button" id="ulozit" class="tlacitko-mensi hlavni">Uložit</button>
+      </div>
+    </div>
+
+    <div class="nastroje" role="toolbar" aria-label="Formátování">
+      <button type="button" data-vlozit="nadpis" title="Nadpis">H</button>
+      <button type="button" data-vlozit="tucne" title="Tučně (Ctrl+B)"><b>B</b></button>
+      <button type="button" data-vlozit="kurziva" title="Kurzíva (Ctrl+I)"><i>I</i></button>
+      <button type="button" data-vlozit="odrazky" title="Odrážky">• seznam</button>
+      <button type="button" data-vlozit="ukol" title="Úkol">☐ úkol</button>
+      <button type="button" data-vlozit="odkaz" title="Odkaz">odkaz</button>
+      <button type="button" data-vlozit="ramecek" title="Rámeček s tipem">rámeček</button>
+      <button type="button" data-vlozit="vzorec" title="Vzorec">∑ vzorec</button>
+      <button type="button" data-vlozit="tabulka" title="Tabulka">tabulka</button>
+      <label class="obrazek-tlacitko" title="Obrázek (nebo Ctrl+V)">obrázek<input id="obrazek" type="file" accept="image/*" hidden /></label>
+      <div class="prepinac" role="tablist">
+        <button type="button" data-pohled="psat" class="aktivni">Psát</button>
+        <button type="button" data-pohled="nahled">Náhled</button>
+      </div>
+    </div>
+
+    <div class="editor-plocha" data-pohled="psat">
+      <textarea id="text" spellcheck="true" lang="cs" aria-label="Text poznámky"></textarea>
+      <div id="nahled" class="prose nahled" aria-label="Náhled"></div>
+    </div>
+  </section>
+</Zaklad>
+
+<script src="../scripts/editor.ts"></script>

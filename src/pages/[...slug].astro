@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import Zaklad from '../layouts/Zaklad.astro';
-import { strom, url, nazev, uryvek, odkazNaUpravu, predci, pocetPoznamek, jeVyplneno, type Poznamka } from '../lib/strom';
+import { strom, url, nazev, uryvek, odkazNaUpravu, predci, pocetPoznamek, jeVyplneno, soubor, datum, hezkeDatum, type Poznamka } from '../lib/strom';
 import { ikona } from '../lib/ikony';
 
 export async function getStaticPaths() {
@@ -14,10 +14,14 @@ const { Content, headings } = await render(p);
 const { podle } = await strom();
 const uzel = podle.get(p.id)!;
 const titulek = nazev(p);
-const drobky = predci(p.id).map((id) => ({ id, nazev: podle.get(id)?.nazev ?? id }));
+const drobky = predci(p.id)
+  .filter((id) => podle.get(id)?.stranka)
+  .map((id) => ({ id, nazev: podle.get(id)!.nazev }));
 const obsah = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const deti = uzel.deti;
 const jePredmet = /^semestry\/[^/]+\/[^/]+$/.test(p.id);
+const editor = url('editor');
+const kdy = datum(p);
 ---
 <Zaklad titulek={titulek} popis={uryvek(p) || undefined} aktivni={p.id}>
   <div class="stranka">
@@ -29,28 +33,40 @@ const jePredmet = /^semestry\/[^/]+\/[^/]+$/.test(p.id);
 
       <div class="meta" data-pagefind-ignore>
         {jePredmet && jeVyplneno(p.data.zkratka) && <span class="cip">{p.data.zkratka}</span>}
-        {jePredmet && jeVyplneno(p.data.kredity) && <span class="cip">{p.data.kredity} kr.</span>}
+        {kdy && <span class="cip">{hezkeDatum(kdy)}</span>}
         {p.data.tags?.map((t) => <a class="stitek" href={url(`stitky/${encodeURIComponent(t)}`)} data-pagefind-filter="štítek">#{t}</a>)}
-        <a class="upravit" href={odkazNaUpravu(p)} target="_blank" rel="noopener"><span set:html={ikona('tuzka', 15)} />Upravit na GitHubu</a>
+        <a class="upravit jen-host" href={odkazNaUpravu(p)} target="_blank" rel="noopener"><span set:html={ikona('tuzka', 15)} />Upravit na GitHubu</a>
+        <a class="upravit jen-autor" href={`${editor}?soubor=${encodeURIComponent(soubor(p))}`}><span set:html={ikona('tuzka', 15)} />Upravit</a>
       </div>
 
       <div class="prose">
         <Content />
       </div>
 
+      {jePredmet && (
+        <div class="akce jen-autor" data-pagefind-ignore>
+          <a class="tlacitko-mensi hlavni" href={`${editor}?novy=prednaska&slozka=${encodeURIComponent(soubor(p).replace(/\/index\.md$/, ''))}`}><span set:html={ikona('plus', 16)} />Nová přednáška</a>
+          <a class="tlacitko-mensi" href={`${editor}?novy=cviceni&slozka=${encodeURIComponent(soubor(p).replace(/\/index\.md$/, ''))}`}><span set:html={ikona('plus', 16)} />Nové cvičení</a>
+        </div>
+      )}
+
       {deti.length > 0 && (
         <section class="podstranky" data-pagefind-ignore>
-          <h2>{jePredmet ? 'Poznámky v předmětu' : 'V této sekci'}</h2>
+          <h2>{jePredmet ? 'Poznámky' : 'Předměty'}</h2>
           <div class="karty">
             {deti.map((d) => (
               <a class="karta" href={url(d.id)}>
                 <strong>{d.nazev}</strong>
-                {d.stranka && uryvek(d.stranka) && <span>{uryvek(d.stranka, 110)}</span>}
-                {d.deti.length > 0 && <small>{pocetPoznamek(d)} {pocetPoznamek(d) === 1 ? 'stránka' : pocetPoznamek(d) < 5 ? 'stránky' : 'stránek'}</small>}
+                {d.stranka && jeVyplneno(d.stranka.data.zkratka) && <span class="cip zarovnat">{d.stranka.data.zkratka}</span>}
+                {d.stranka && !d.deti.length && datum(d.stranka) && <small>{hezkeDatum(datum(d.stranka))}</small>}
+                {d.deti.length > 0 && <small>{pocetPoznamek(d)} {pocetPoznamek(d) === 1 ? 'poznámka' : pocetPoznamek(d) < 5 ? 'poznámky' : 'poznámek'}</small>}
               </a>
             ))}
           </div>
         </section>
+      )}
+      {jePredmet && deti.length === 0 && (
+        <p class="prazdny-predmet" data-pagefind-ignore>Zatím tu nejsou žádné poznámky.</p>
       )}
     </article>
 

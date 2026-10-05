@@ -43,7 +43,7 @@ export function uryvek(p: Poznamka, delka = 140): string {
   return text.length > delka ? text.slice(0, delka).replace(/\s+\S*$/, '') + '…' : text;
 }
 
-const PORADI_SEKCI = ['studium', 'semestry', 'navody', 'zaverecna-prace', 'sablony', 'jak-pridavat', 'spoluzaci'];
+const PORADI_SEKCI = ['semestry', 'spoluzaci', 'jak-pridavat'];
 
 let cache: Promise<{ koren: Uzel; vse: Poznamka[]; podle: Map<string, Uzel> }> | undefined;
 
@@ -99,6 +99,19 @@ export const pocetPoznamek = (u: Uzel): number =>
 export const predci = (id: string) => {
   const casti = id.split('/');
   return casti.slice(0, -1).map((_, i) => casti.slice(0, i + 1).join('/'));
+};
+
+export const soubor = (p: Poznamka) => p.filePath?.replace(/^\.\//, '') ?? '';
+
+// Datum z hlavičky poznámky (datum: 2026-10-05) jako text RRRR-MM-DD.
+export const datum = (p: Poznamka) => {
+  const d = p.data.datum;
+  if (!d) return '';
+  return d instanceof Date ? d.toISOString().slice(0, 10) : String(d).includes('{{') ? '' : String(d);
+};
+export const hezkeDatum = (iso: string) => {
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return m ? `${+m[3]}. ${+m[2]}. ${m[1]}` : iso;
 };
 
 export const jeVyplneno = (v: unknown) => v !== undefined && v !== '' && !String(v).includes('{{');

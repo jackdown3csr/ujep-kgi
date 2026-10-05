@@ -1,0 +1,5 @@
+---
+zkratka: {{ zkratka }}
+---
+
+# {{ název předmětu }}

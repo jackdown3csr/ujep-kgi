@@ -15,6 +15,7 @@ const poznamky = defineCollection({
     nazev: z.string().optional(), // název v menu, když se liší od nadpisu
     zkratka: z.string().optional(),
     kredity: z.union([z.string(), z.number()]).optional(),
+    datum: z.union([z.date(), z.string()]).optional(),
   }),
 });
 
