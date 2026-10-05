@@ -420,3 +420,22 @@ details[open] > summary .rozbalit { transform: rotate(90deg); }
   .editor-plocha[data-pohled='psat'] .nahled, .editor-plocha[data-pohled='nahled'] textarea { display: none; }
   .editor-nazev code { display: none; }
 }
+
+/* ---------- nástroje v poznámkách ---------- */
+.nastroj { margin: 8px 0 28px; padding: 18px; border-radius: 16px; border: 1px solid var(--cara); background: var(--plocha); box-shadow: var(--stin); }
+.nastroj-rezim { display: inline-flex; gap: 2px; padding: 3px; border-radius: 10px; background: var(--plocha-2); margin-bottom: 16px; }
+.nastroj-rezim button { height: 32px; padding: 0 14px; border: 0; border-radius: 8px; background: none; color: var(--text-2); font: inherit; font-size: 14px; cursor: pointer; }
+.nastroj-rezim button.aktivni { background: var(--plocha); color: var(--text); font-weight: 600; box-shadow: var(--stin); }
+.nastroj-pole { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .nastroj-pole { grid-template-columns: 1fr; } }
+.nastroj-pole label { min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.nastroj .vstup { width: 100%; min-width: 0; display: flex; align-items: center; height: 46px; border: 1px solid var(--cara); border-radius: 12px; background: var(--pozadi); overflow: hidden; }
+.nastroj .vstup:focus-within { outline: 2px solid var(--akcent); outline-offset: -1px; }
+.nastroj .vstup b { padding-left: 12px; color: var(--text-3); font-weight: 600; white-space: nowrap; }
+.nastroj input { flex: 1; min-width: 0; height: 100%; padding: 0 12px; border: 0; background: none; color: var(--text); font: inherit; font-size: 18px; font-variant-numeric: tabular-nums; }
+.nastroj input:focus { outline: none; }
+.nastroj select { height: 100%; padding: 0 10px; border: 0; border-left: 1px solid var(--cara); background: var(--plocha-2); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; }
+.nastroj .vysledek .vstup { background: var(--akcent-jemny); border-color: color-mix(in srgb, var(--akcent) 45%, transparent); }
+.nastroj .vysledek input { color: var(--akcent-text); font-weight: 700; }
+.nastroj .vysledek > span:first-child { color: var(--akcent-text); }
+.nastroj-vypocet { margin: 14px 0 0 !important; font-size: 14px; color: var(--text-3); font-variant-numeric: tabular-nums; }

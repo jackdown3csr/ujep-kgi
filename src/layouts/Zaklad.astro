@@ -74,6 +74,10 @@ const plnyTitulek = titulek ? `${titulek} · ${nastaveni.nazev}` : `${nastaveni.
     <Hledani />
 
     <script>
+      import '../scripts/nastroje';
+    </script>
+
+    <script>
       const koren = document.documentElement;
       const tmavy = () => koren.dataset.theme ? koren.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
       document.getElementById('tema')!.addEventListener('click', () => {
