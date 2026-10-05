@@ -437,9 +437,14 @@ details[open] > summary .rozbalit { transform: rotate(90deg); }
 .nastroj input { flex: 1; min-width: 0; height: 100%; padding: 0 12px; border: 0; background: none; color: var(--text); font: inherit; font-size: 18px; font-variant-numeric: tabular-nums; }
 .nastroj input:focus { outline: none; }
 .nastroj select { height: 100%; padding: 0 10px; border: 0; border-left: 1px solid var(--cara); background: var(--plocha-2); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; }
-.nastroj .vysledek .vstup { background: var(--akcent-jemny); border-color: color-mix(in srgb, var(--akcent) 45%, transparent); }
-.nastroj .vysledek input { color: var(--akcent-text); font-weight: 700; }
+/* pole s výsledkem: vždy poslední, nevypadá jako políčko k vyplnění */
+.nastroj .vysledek { order: 1; }
+.nastroj .vysledek .vstup { background: var(--akcent-jemny); border: 1px dashed color-mix(in srgb, var(--akcent) 60%, transparent); }
+.nastroj .vysledek .vstup:focus-within { outline: none; }
+.nastroj .vysledek input { color: var(--akcent-text); font-weight: 700; cursor: default; pointer-events: none; }
 .nastroj .vysledek > span:first-child { color: var(--akcent-text); }
+.nastroj .vysledek > span:first-child::before { content: "= "; }
+.nastroj .vysledek > span:first-child::after { content: " (výsledek)"; font-weight: 500; color: var(--text-3); }
 
 /* trojčlenka v kalkulačce měřítek */
 .trojclenka { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--cara); font-variant-numeric: tabular-nums; }

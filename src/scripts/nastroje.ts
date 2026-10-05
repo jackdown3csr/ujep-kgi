@@ -98,6 +98,7 @@ function meritko(el: HTMLElement) {
     ['meritko', 'mapa', 'skutecnost'].forEach((n) => {
       pole(n).classList.toggle('vysledek', n === r);
       vstup(n).readOnly = n === r;
+      vstup(n).tabIndex = n === r ? -1 : 0;
     });
     prepocti();
   }
