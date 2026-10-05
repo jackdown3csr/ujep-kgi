@@ -46,6 +46,7 @@ function meritko(el: HTMLElement) {
   el.className = 'nastroj';
   el.innerHTML = `
     <div class="nastroj-rezim" role="radiogroup" aria-label="Co počítám">
+      <span class="nastroj-rezim-popis">Počítám</span>
       <button type="button" data-rezim="skutecnost" class="aktivni">Skutečnost</button>
       <button type="button" data-rezim="mapa">Na mapě</button>
       <button type="button" data-rezim="meritko">Měřítko</button>
