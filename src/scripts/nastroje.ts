@@ -109,6 +109,75 @@ function meritko(el: HTMLElement) {
   nastavRezim('skutecnost');
 }
 
-const NASTROJE: Record<string, (el: HTMLElement) => void> = { meritko };
+// Grafické měřítko: první polovina rozdělená na dílky, druhá polovina jeden úsek, nula na začátku.
+const HEZKA = [1, 2, 5];
+function hezkeCislo(n: number) {
+  const rad = 10 ** Math.floor(Math.log10(n));
+  let nej = rad;
+  for (const k of [...HEZKA, 10]) if (Math.abs(Math.log(k * rad / n)) < Math.abs(Math.log(nej / n))) nej = k * rad;
+  return nej;
+}
+const sJednotkou = (m: number, km: boolean) => (km ? `${hezky(m / 1000)} km` : `${hezky(m)} m`);
+
+function graficke(el: HTMLElement) {
+  el.className = 'nastroj';
+  el.innerHTML = `
+    <div class="nastroj-pole">
+      <label data-pole="meritko"><span>Měřítko</span>
+        <span class="vstup"><b>1 :</b><input inputmode="decimal" value="10 000" /></span></label>
+      <label data-pole="delka"><span>Délka měřítka asi</span>
+        <span class="vstup"><input inputmode="decimal" value="10" /><b class="za">cm</b></span></label>
+      <label data-pole="dilky"><span>Dílků v 1. polovině</span>
+        <span class="vstup"><input inputmode="numeric" value="5" /></span></label>
+    </div>
+    <div class="gm-vystup" aria-live="polite"></div>`;
+
+  const vstup = (n: string) => el.querySelector(`[data-pole="${n}"] input`) as HTMLInputElement;
+  const vystup = el.querySelector('.gm-vystup') as HTMLElement;
+
+  function prepocti() {
+    const M = cislo(vstup('meritko').value);
+    const L = cislo(vstup('delka').value);
+    const d = Math.round(cislo(vstup('dilky').value));
+    if (!(M && L && d >= 1 && d <= 20)) { vystup.innerHTML = '<p class="trojclenka-chyba">Zadej kladná čísla (dílků 1 až 20).</p>'; return; }
+
+    const naCm = M / 100; // kolik metrů je 1 cm na mapě
+    const odhad = (L * naCm) / (2 * d); // dílek v m, než ho zaokrouhlím
+    const dilek = hezkeCislo(odhad);
+    const dilekCm = dilek / naCm;
+    const pul = dilek * d, pulCm = dilekCm * d;
+    const celkem = 2 * pul, delka = 2 * pulCm;
+    const km = dilek >= 1000 || (celkem >= 1000 && dilek % 1000 === 0);
+
+    // SVG v milimetrech, šířka v CSS cm → při tisku 100 % má měřítko skutečnou délku.
+    const W = delka * 10, H = 3, okraj = 8;
+    const x = (cm: number) => okraj + cm * 10;
+    let pruh = '', popisky = '';
+    for (let i = 0; i < d; i++) {
+      pruh += `<rect x="${x(i * dilekCm)}" y="6" width="${dilekCm * 10}" height="${H}" class="${i % 2 ? 'gm-bila' : 'gm-cerna'}" />`;
+    }
+    pruh += `<rect x="${x(pulCm)}" y="6" width="${pulCm * 10}" height="${H}" class="${(d - 1) % 2 ? 'gm-cerna' : 'gm-bila'}" />`; // opačná barva než poslední dílek
+    for (let i = 0; i <= d; i++) popisky += `<text x="${x(i * dilekCm)}" y="4.4">${hezky(km ? (i * dilek) / 1000 : i * dilek)}</text>`;
+    popisky += `<text x="${x(delka)}" y="4.4">${hezky(km ? celkem / 1000 : celkem)}</text><text class="gm-jedn" x="${x(delka) + 1.5}" y="8.9">${km ? 'km' : 'm'}</text>`;
+    const svg = `<svg class="gm-svg" viewBox="0 0 ${W + 2 * okraj + 6} 11" style="width:min(calc(${delka}cm + ${(2 * okraj + 6) / 10}cm), 100%)" role="img" aria-label="Grafické měřítko 0 až ${sJednotkou(celkem, km)}">${pruh}<rect x="${x(0)}" y="6" width="${W}" height="${H}" class="gm-obrys" />${popisky}</svg>`;
+
+    const presne = Math.abs(dilek - odhad) < 1e-9;
+    const j = (m: number) => sJednotkou(m, km);
+    vystup.innerHTML = `
+      <div class="gm-kresba">${svg}</div>
+      <ol class="gm-postup">
+        <li>1 cm na mapě = ${hezky(M)} cm = <b>${hezky(naCm)} m</b> ve skutečnosti</li>
+        <li>${hezky(L)} cm · ${hezky(naCm)} m = ${hezky(L * naCm)} m, na polovinu a ${d} ${d === 1 ? 'dílek' : d < 5 ? 'dílky' : 'dílků'}: ${hezky(L * naCm)} / ${2 * d} = ${hezky(odhad)} m${presne ? '' : `, zaokrouhlím na <b>${hezky(dilek)} m</b>`}</li>
+        <li>dílek: ${hezky(dilek)} m / ${hezky(naCm)} m = <b>${hezky(dilekCm)} cm</b> na mapě</li>
+        <li>1. polovina: ${d} × ${hezky(dilekCm)} cm = ${hezky(pulCm)} cm = ${j(pul)}</li>
+        <li>2. polovina: jeden úsek ${hezky(pulCm)} cm = ${j(pul)}</li>
+        <li>celkem <b>${hezky(delka)} cm = ${j(celkem)}</b></li>
+      </ol>`;
+  }
+  el.addEventListener('input', prepocti);
+  prepocti();
+}
+
+const NASTROJE: Record<string, (el: HTMLElement) => void> = { meritko, graficke };
 
 document.querySelectorAll<HTMLElement>('[data-nastroj]').forEach((el) => NASTROJE[el.dataset.nastroj!]?.(el));

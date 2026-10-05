@@ -465,3 +465,16 @@ details[open] > summary .rozbalit { transform: rotate(90deg); }
 .tc-vzorec .tc-nasob, .tc-vzorec .tc-del { padding: 1px 8px; font-size: 15px; }
 .tc-prevod { color: var(--text-2); }
 .trojclenka-chyba { color: var(--text-3); margin: 0; }
+
+/* grafické měřítko */
+.nastroj .vstup b.za { padding: 0 12px 0 0; }
+.gm-vystup { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--cara); }
+.gm-kresba { padding: 4px 0 8px; }
+.gm-svg { display: block; max-width: none; height: auto; overflow: visible; font-family: var(--pismo); }
+.gm-svg text { font-size: 3px; fill: var(--text); text-anchor: middle; font-variant-numeric: tabular-nums; }
+.gm-svg .gm-jedn { text-anchor: start; font-weight: 600; }
+.gm-cerna { fill: var(--text); }
+.gm-bila { fill: var(--plocha); stroke: var(--text); stroke-width: .3; }
+.gm-obrys { fill: none; stroke: var(--text); stroke-width: .3; }
+.gm-postup { margin: 12px 0 0 !important; padding-left: 1.3em; line-height: 1.9; font-variant-numeric: tabular-nums; }
+.gm-postup b { color: var(--akcent-text); }
