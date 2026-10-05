@@ -477,4 +477,5 @@ details[open] > summary .rozbalit { transform: rotate(90deg); }
 .gm-bila { fill: var(--plocha); stroke: var(--text); stroke-width: .3; }
 .gm-obrys { fill: none; stroke: var(--text); stroke-width: .3; }
 .gm-postup { margin: 12px 0 0 !important; padding-left: 1.3em; line-height: 1.9; font-variant-numeric: tabular-nums; }
+.gm-varovani { margin: 4px 0 0 !important; color: #c2410c; font-weight: 600; }
 .gm-postup b { color: var(--akcent-text); }
