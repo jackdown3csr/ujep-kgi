@@ -2,12 +2,15 @@
 
 <div data-nastroj="meritko"></div>
 
-## Postup
+## Postup trojčlenkou
 
-Kolik km je ve skutečnosti 1 cm na mapě v měřítku 1 : 150 000?
+Kolik km je ve skutečnosti 5 cm na mapě v měřítku 1 : 125 000?
 
-1. 1 cm na mapě = 150 000 cm ve skutečnosti
-2. 150 000 cm ÷ 100 = 1 500 m
-3. 1 500 m ÷ 1 000 = **1,5 km**
+| na mapě | | ve skutečnosti |
+|---:|:---:|:---|
+| 1 cm | … | 125 000 cm |
+| 5 cm | … | x cm |
 
-Zkratka: u měřítkového čísla škrtni 5 nul a máš km na 1 cm (150 000 → 1,5 km).
+x = **5** · **125 000** / 1 = 625 000 cm = 6 250 m = **6,25 km**
+
+Násobíš křížem (5 · 125 000) a dělíš číslem nad tím, co znáš (1). Na obou stranách musí být stejné jednotky, proto nejdřív cm a převod na km až na konci.

@@ -438,4 +438,23 @@ details[open] > summary .rozbalit { transform: rotate(90deg); }
 .nastroj .vysledek .vstup { background: var(--akcent-jemny); border-color: color-mix(in srgb, var(--akcent) 45%, transparent); }
 .nastroj .vysledek input { color: var(--akcent-text); font-weight: 700; }
 .nastroj .vysledek > span:first-child { color: var(--akcent-text); }
-.nastroj-vypocet { margin: 14px 0 0 !important; font-size: 14px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+/* trojčlenka v kalkulačce měřítek */
+.trojclenka { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--cara); font-variant-numeric: tabular-nums; }
+.tc-mrizka { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px 18px; align-items: center; max-width: 460px; }
+.tc-mrizka > span { position: relative; z-index: 1; justify-self: center; }
+.tc-hlava { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-3); }
+.tc-tecky { color: var(--text-3); }
+.tc-nasob, .tc-del, .tc-x { padding: 4px 12px; border-radius: 10px; font-size: 17px; font-weight: 600; background: var(--plocha); }
+.tc-nasob { color: var(--akcent-text); border: 2px solid var(--akcent); }
+.tc-del { color: #c2410c; border: 2px dashed #f97316; }
+:root[data-theme='dark'] .tc-del { color: #fdba74; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .tc-del { color: #fdba74; } }
+.tc-x { color: var(--text); border: 2px solid var(--text-3); background: var(--plocha-2); min-width: 48px; text-align: center; }
+.tc-sipka { position: absolute; inset: 22px 0 0 0; width: 100%; height: calc(100% - 22px); z-index: 0; overflow: visible; }
+.tc-sipka line { stroke: var(--akcent); stroke-width: 2; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+.x-vlevo .tc-sipka { transform: scaleX(-1); }
+.tc-vzorec { margin: 16px 0 0 !important; font-size: 16px; line-height: 2; }
+.tc-vzorec .tc-nasob, .tc-vzorec .tc-del { padding: 1px 8px; font-size: 15px; }
+.tc-prevod { color: var(--text-2); }
+.trojclenka-chyba { color: var(--text-3); margin: 0; }
