@@ -110,17 +110,22 @@ function meritko(el: HTMLElement) {
 }
 
 // Grafické měřítko: první polovina rozdělená na dílky, druhá polovina jeden úsek, nula na začátku.
-const HEZKA = [1, 2, 5];
-function hezkeCislo(n: number) {
-  const rad = 10 ** Math.floor(Math.log10(n));
-  let nej = rad;
-  for (const k of [...HEZKA, 10]) if (Math.abs(Math.log(k * rad / n)) < Math.abs(Math.log(nej / n))) nej = k * rad;
-  return nej;
+// Návrhy dílku: kulatá čísla, která na mapě vyjdou zhruba 0,8 až 2,5 cm.
+const KULATA = [1, 1.5, 2, 2.5, 3, 4, 5];
+function navrhyDilku(naCm: number) {
+  const rad = 10 ** Math.floor(Math.log10(naCm));
+  const navrhy: { m: number; cm: number; skore: number }[] = [];
+  for (const r of [rad / 10, rad, rad * 10]) for (const k of KULATA) {
+    const m = Math.round(k * r * 1e6) / 1e6, cm = m / naCm;
+    if (cm < 0.8 || cm > 2.5) continue;
+    // nejradši kolem 1,4 cm, a když vyjde celý centimetr, tím líp
+    navrhy.push({ m, cm, skore: Math.abs(Math.log(cm / 1.4)) - (Math.abs(cm - Math.round(cm)) < 1e-9 ? 0.3 : 0) });
+  }
+  return navrhy;
 }
 const sJednotkou = (m: number, km: boolean) => (km ? `${hezky(m / 1000)} km` : `${hezky(m)} m`);
 
 const kolem = (n: number, mist = 3) => hezky(Math.round(n * 10 ** mist) / 10 ** mist);
-const CIL_CM = 10; // když dílek nezadáš, volí se tak, aby měřítko mělo kolem 10 cm
 
 function graficke(el: HTMLElement) {
   el.className = 'nastroj';
@@ -133,8 +138,10 @@ function graficke(el: HTMLElement) {
       <label data-pole="dilky"><span>Dílků v 1. polovině</span>
         <span class="vstup"><input inputmode="numeric" value="5" /></span></label>
     </div>
+    <div class="gm-navrhy"></div>
     <div class="gm-vystup" aria-live="polite"></div>`;
 
+  const navrhyEl = el.querySelector('.gm-navrhy') as HTMLElement;
   const pole = (n: string) => el.querySelector(`[data-pole="${n}"]`) as HTMLElement;
   const vstup = (n: string) => pole(n).querySelector('input') as HTMLInputElement;
   const vystup = el.querySelector('.gm-vystup') as HTMLElement;
@@ -146,8 +153,9 @@ function graficke(el: HTMLElement) {
     if (!(M && d >= 1 && d <= 20) || Number.isNaN(zadany)) { vystup.innerHTML = '<p class="trojclenka-chyba">Zadej kladná čísla (dílků 1 až 20).</p>'; return; }
 
     const naCm = M / 100; // kolik metrů je 1 cm na mapě
-    const odhad = (CIL_CM * naCm) / (2 * d); // dílek v m pro měřítko kolem 10 cm
-    const dilek = zadany ?? hezkeCislo(odhad);
+    const navrhy = navrhyDilku(naCm);
+    const doporuceny = navrhy.reduce((a, b) => (b.skore < a.skore ? b : a), navrhy[0]).m;
+    const dilek = zadany ?? doporuceny;
     const dilekCm = dilek / naCm;
     const pul = dilek * d, pulCm = dilekCm * d;
     const celkem = 2 * pul, delka = 2 * pulCm;
@@ -166,18 +174,23 @@ function graficke(el: HTMLElement) {
     popisky += `<text x="${x(delka)}" y="4.4">${hezky(km ? celkem / 1000 : celkem)}</text><text class="gm-jedn" x="${x(delka) + 1.5}" y="8.9">${km ? 'km' : 'm'}</text>`;
     const svg = `<svg class="gm-svg" viewBox="0 0 ${W + 2 * okraj + 6} 11" style="width:min(calc(${delka}cm + ${(2 * okraj + 6) / 10}cm), 100%)" role="img" aria-label="Grafické měřítko 0 až ${j(celkem)}">${pruh}<rect x="${x(0)}" y="6" width="${W}" height="${H}" class="gm-obrys" />${popisky}</svg>`;
 
-    const presne = Math.abs(dilek - odhad) < 1e-9;
+    // přepisuj jen při změně, jinak by „change“ při kliknutí vyměnil tlačítko pod myší a klik by se ztratil
+    const navrhyHtml = `<span>Návrhy dílku</span>` + navrhy.map((n) => {
+      const vKm = n.m >= 1000;
+      return `<button type="button" data-m="${n.m}" class="${Math.abs(n.m - dilek) < 1e-9 ? 'aktivni' : ''}">${hezky(vKm ? n.m / 1000 : n.m)} ${vKm ? 'km' : 'm'} <small>${kolem(n.cm, 2)} cm</small></button>`;
+    }).join('');
+    if (navrhyEl.innerHTML !== navrhyHtml) navrhyEl.innerHTML = navrhyHtml;
     const dilku = d === 1 ? 'dílek' : d < 5 ? 'dílky' : 'dílků';
     const volba = zadany !== null
       ? `dílek volím <b>${j(dilek)}</b>`
-      : `dílek volím tak, aby měřítko mělo kolem ${CIL_CM} cm: ${CIL_CM} cm · ${hezky(naCm)} m / ${2 * d} = ${kolem(odhad)} m${presne ? '' : `, zaokrouhlím na <b>${j(dilek)}</b>`}`;
+      : `dílek volím rozumné kulaté číslo blízko 1 cm (${j(naCm)}): <b>${j(dilek)}</b>`;
     const mm = Math.round(dilekCm * 100) / 10;
     const varovani = delka > 25 ? '<p class="gm-varovani">Měřítko je moc dlouhé, zvol menší dílek nebo méně dílků.</p>'
       : delka < 3 ? '<p class="gm-varovani">Měřítko je moc krátké, zvol větší dílek.</p>' : '';
     vystup.innerHTML = `
       ${delka > 25 ? '' : `<div class="gm-kresba">${svg}</div>`}${varovani}
       <ol class="gm-postup">
-        <li>1 cm na mapě = ${hezky(M)} cm = <b>${hezky(naCm)} m</b> ve skutečnosti</li>
+        <li>1 cm na mapě = ${hezky(M)} cm = <b>${j(naCm)}</b> ve skutečnosti</li>
         <li>${volba}</li>
         <li>dílek na mapě: ${hezky(dilek)} m / ${hezky(naCm)} m = <b>${kolem(dilekCm)} cm</b>${Math.abs(dilekCm * 10 - mm) > 1e-9 ? ` ≈ ${hezky(mm)} mm` : ''}</li>
         <li>1. polovina: ${d} ${dilku} × ${kolem(dilekCm)} cm = ${kolem(pulCm)} cm = ${j(pul)}</li>
@@ -185,6 +198,16 @@ function graficke(el: HTMLElement) {
         <li>celkem <b>${kolem(delka)} cm = ${j(celkem)}</b></li>
       </ol>`;
   }
+  navrhyEl.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('button');
+    if (!b) return;
+    const m = Number(b.dataset.m), vKm = m >= 1000;
+    vstup('dilek').value = hezky(vKm ? m / 1000 : m);
+    (pole('dilek').querySelector('select') as HTMLSelectElement).value = vKm ? 'km' : 'm';
+    prepocti();
+  });
+  // nové měřítko = nové návrhy, ručně zvolený dílek k němu už nepatří
+  vstup('meritko').addEventListener('input', () => { vstup('dilek').value = ''; });
   el.addEventListener('input', prepocti);
   el.addEventListener('change', prepocti);
   prepocti();
