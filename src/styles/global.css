@@ -468,6 +468,11 @@ details[open] > summary .rozbalit { transform: rotate(90deg); }
 
 /* grafické měřítko */
 .nastroj .vstup b.za { padding: 0 12px 0 0; }
+.gm-navrhy { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 14px; }
+.gm-navrhy > span { font-size: 13px; font-weight: 600; color: var(--text-2); margin-right: 4px; }
+.gm-navrhy button { padding: 5px 10px; border: 1px solid var(--cara); border-radius: 999px; background: var(--pozadi); color: var(--text); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.gm-navrhy button small { font-weight: 500; color: var(--text-3); margin-left: 2px; }
+.gm-navrhy button.aktivni { border-color: var(--akcent); background: var(--akcent-jemny); color: var(--akcent-text); }
 .gm-vystup { margin-top: 18px; padding-top: 16px; border-top: 1px dashed var(--cara); }
 .gm-kresba { padding: 4px 0 8px; }
 .gm-svg { display: block; max-width: none; height: auto; overflow: visible; font-family: var(--pismo); }
