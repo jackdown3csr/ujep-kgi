@@ -1,6 +1,6 @@
 // Interaktivní nástroje vložené do poznámek přes <div data-nastroj="…"></div>.
 
-import { trojuhelnik, procvicovani } from './goniometrie';
+import { trojuhelnik, procvicovani, prevodUhlu } from './goniometrie';
 
 const JEDNOTKY: Record<string, number> = { mm: 0.1, cm: 1, m: 100, km: 100_000 }; // v centimetrech
 
@@ -215,6 +215,6 @@ function graficke(el: HTMLElement) {
   prepocti();
 }
 
-const NASTROJE: Record<string, (el: HTMLElement) => void> = { meritko, graficke, trojuhelnik, procvicovani };
+const NASTROJE: Record<string, (el: HTMLElement) => void> = { meritko, graficke, trojuhelnik, procvicovani, uhly: prevodUhlu };
 
 document.querySelectorAll<HTMLElement>('[data-nastroj]').forEach((el) => NASTROJE[el.dataset.nastroj!]?.(el));

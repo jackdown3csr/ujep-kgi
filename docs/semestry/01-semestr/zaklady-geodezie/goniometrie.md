@@ -31,11 +31,19 @@ $\sin\alpha = \cos(100\,\text{gon} - \alpha) = \cos(90° - \alpha)$.
 
 **Opačně** (znám poměr, hledám úhel): $\alpha = \arcsin(a/c)$, $\arccos(b/c)$, $\operatorname{arctg}(a/b)$. Na kalkulačce `SHIFT` + `sin` / `cos` / `tan`. Kotangens kalkulačka nemá: $\operatorname{cotg}\alpha = 1/\tan\alpha$.
 
-## Gony
+## Úhlové jednotky
 
-V geodézii se úhly měří v gonech: plný úhel 400 gon, pravý úhel 100 gon.
+<div data-nastroj="uhly"></div>
 
-$1\,\text{gon} = 0{,}9°$, $\quad x° = x \cdot \tfrac{10}{9}\,\text{gon}$, $\quad 1\,\text{gon} = 100\,\text{c} = 10\,000\,\text{cc}$
+Plný úhel: $360° = 400\,\text{gon} = 2\pi\,\text{rad}$. Pravý úhel: $90° = 100\,\text{gon} = \tfrac{\pi}{2}\,\text{rad}$.
+
+| z \ na | stupně | gony | radiány |
+|---|---|---|---|
+| **stupně** | | $\cdot\, \tfrac{400}{360} = \,/\,0{,}9$ | $\cdot\, \tfrac{\pi}{180}$ |
+| **gony** | $\cdot\, 0{,}9$ | | $\cdot\, \tfrac{\pi}{200}$ |
+| **radiány** | $\cdot\, \tfrac{180}{\pi}$ | $\cdot\, \tfrac{200}{\pi}$ | |
+
+$1° = 60′ = 3600″$, $\quad 1\,\text{gon} = 100\,\text{c} = 10\,000\,\text{cc}$. Radián je úhel, u kterého je oblouk stejně dlouhý jako poloměr. V geodézii se úhly měří v gonech.
 
 > [!WARNING] Režim kalkulačky
 > Kalkulačka musí být v režimu **GRAD** (na displeji G), jinak vyjde nesmysl. Kontrola: $\sin 50\,\text{gon} = 0{,}7071$ a $\sin 100\,\text{gon} = 1$. Ve stupních (D) by $\sin 100 = 0{,}9848$.

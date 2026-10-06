@@ -549,3 +549,15 @@ details[open] > summary .rozbalit { transform: rotate(90deg); }
 :root[data-theme='dark'] .gp-spatne > p { color: #fdba74; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .gp-spatne > p { color: #fdba74; } }
 .gp-skore { margin: 14px 0 0 !important; font-size: 13px; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+/* převodník úhlů */
+.pu-pole { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .pu-pole { grid-template-columns: 1fr; } }
+.pu-pole label { min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.nastroj .pu-dms input { padding: 0 4px 0 12px; text-align: right; }
+.nastroj .pu-dms b { padding-left: 0; }
+.nastroj .pu-pole .vysledek { order: 0; }
+.nastroj .pu-pole .vysledek > span:first-child::before, .nastroj .pu-pole .vysledek > span:first-child::after { content: none; }
+.nastroj .pu-pole .vysledek input { pointer-events: auto; cursor: text; }
+.pu-postup { margin: 16px 0 0 !important; padding: 14px 0 0 1.3em; border-top: 1px dashed var(--cara); line-height: 1.9; font-variant-numeric: tabular-nums; }
+.pu-postup b { color: var(--akcent-text); }

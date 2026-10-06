@@ -344,10 +344,36 @@ const TEMATA = {
       postup: (v) => [`k = ${hezky(strany[i][1] * k)} / ${strany[i][1]} = ${hezky(k)}`, `${strany[jj][0]}' = ${hezky(k)} · ${strany[jj][1]} = <b>${hezky(v, 2)} cm</b>`],
     };
   },
+
+  prevody(): Uloha {
+    const smer = vyber(['deg-gon', 'gon-deg', 'deg-rad', 'rad-deg', 'gon-rad', 'dms-deg'] as const);
+    const st = nahodne(1, 359, 4);
+    if (smer === 'dms-deg') {
+      const d = Math.floor(st), mi = Math.floor(Math.random() * 60), se = Math.floor(Math.random() * 60);
+      return {
+        zadani: `Převeď ${d}° ${mi}′ ${se}″ na stupně v desetinném tvaru.`,
+        otazka: 'úhel =', jednotka: '°', tol: 0.0011, vzorec: '1° = 60′, 1′ = 60″: stupně + minuty / 60 + vteřiny / 3600',
+        spocti: () => d + mi / 60 + se / 3600,
+        postup: (v) => [`${d} + ${mi} / 60 + ${se} / 3600 = <b>${pevne(v, 4)}°</b>`],
+      };
+    }
+    const [z, na] = smer.split('-') as ['deg' | 'gon' | 'rad', 'deg' | 'gon' | 'rad'];
+    const PLNY = { deg: 360, gon: 400, rad: 2 * Math.PI };
+    const ZN = { deg: '°', gon: 'gon', rad: 'rad' };
+    const vstup = z === 'rad' ? Math.round((st * Math.PI) / 180 * 1e4) / 1e4 : z === 'gon' ? Math.round((st / 0.9) * 1e4) / 1e4 : st;
+    const pomer = { deg: '360', gon: '400', rad: '2π' };
+    return {
+      zadani: `Převeď ${pevne(vstup, 4)} ${ZN[z]} na ${{ deg: 'stupně', gon: 'gony', rad: 'radiány' }[na]}.`,
+      otazka: 'úhel =', jednotka: ZN[na], tol: 0.0011,
+      vzorec: 'Plný úhel: 360° = 400 gon = 2π rad. Vynásob poměrem cíl / zdroj.',
+      spocti: () => (vstup * PLNY[na]) / PLNY[z],
+      postup: (v) => [`${pevne(vstup, 4)} · ${pomer[na]} / ${pomer[z]} = <b>${pevne(v, 4)} ${ZN[na]}</b>`],
+    };
+  },
 };
 
 type Tema = keyof typeof TEMATA;
-const NAZVY: Record<Tema, string> = { definice: 'Definice', delky: 'Délky', vysky: 'Výšky', souradnice: 'Souřadnice', podobnost: 'Podobnost' };
+const NAZVY: Record<Tema, string> = { definice: 'Definice', delky: 'Délky', vysky: 'Výšky', souradnice: 'Souřadnice', podobnost: 'Podobnost', prevody: 'Převody' };
 
 export function procvicovani(el: HTMLElement) {
   let jedn: Jednotka = pamet.cti('gon-jednotka', 'gon');
@@ -485,4 +511,69 @@ export function procvicovani(el: HTMLElement) {
   napojPrepinac(el, 'jedn', (h) => { jedn = h as Jednotka; pamet.pis('gon-jednotka', jedn); nova(); });
   ukazSkore();
   nova();
+}
+
+// Převodník úhlů: píšeš do kteréhokoli pole, ostatní se dopočítají.
+const NA_STUPNE = { deg: 1, gon: 0.9, rad: 180 / Math.PI };
+
+export function prevodUhlu(el: HTMLElement) {
+  el.className = 'nastroj';
+  el.innerHTML = `
+    <div class="pu-pole">
+      <label data-pole="deg"><span>Stupně</span><span class="vstup"><input inputmode="decimal" value="45" /><b class="za">°</b></span></label>
+      <label data-pole="dms"><span>Stupně, minuty, vteřiny</span><span class="vstup pu-dms">
+        <input inputmode="numeric" data-cast="d" /><b>°</b><input inputmode="numeric" data-cast="m" /><b>′</b><input inputmode="decimal" data-cast="s" /><b class="za">″</b></span></label>
+      <label data-pole="gon"><span>Gony</span><span class="vstup"><input inputmode="decimal" /><b class="za">gon</b></span></label>
+      <label data-pole="rad"><span>Radiány</span><span class="vstup"><input inputmode="decimal" /><b class="za">rad</b></span></label>
+    </div>
+    <ol class="pu-postup" aria-live="polite"></ol>`;
+  const pole = (n: string) => el.querySelector(`[data-pole="${n}"]`) as HTMLElement;
+  const vstup = (n: string) => pole(n).querySelector('input') as HTMLInputElement;
+  const cast = (c: string) => el.querySelector(`[data-cast="${c}"]`) as HTMLInputElement;
+  const postup = el.querySelector('.pu-postup') as HTMLElement;
+  let zdroj = 'deg';
+
+  function prepocti() {
+    let deg: number;
+    if (zdroj === 'dms') {
+      const [d, mi, se] = ['d', 'm', 's'].map((c) => (cast(c).value.trim() === '' ? 0 : nacti(cast(c).value)));
+      const zn = cast('d').value.trim().startsWith('-') ? -1 : 1;
+      deg = zn * (Math.abs(d) + mi / 60 + se / 3600);
+    } else deg = nacti(vstup(zdroj).value) * NA_STUPNE[zdroj as 'deg' | 'gon' | 'rad'];
+    ['deg', 'dms', 'gon', 'rad'].forEach((n) => pole(n).classList.toggle('vysledek', n !== zdroj && Number.isFinite(deg)));
+    if (!Number.isFinite(deg)) { postup.innerHTML = '<li>Zadej číslo.</li>'; return; }
+    const gon = deg / 0.9, rad = (deg * Math.PI) / 180;
+    if (zdroj !== 'deg') vstup('deg').value = hezky(deg, 6);
+    if (zdroj !== 'gon') vstup('gon').value = hezky(gon, 6);
+    if (zdroj !== 'rad') vstup('rad').value = hezky(rad, 6);
+    // stupně, minuty, vteřiny s přenosem 59,995″ → 60″
+    const a = Math.abs(deg);
+    let d = Math.floor(a), mi = Math.floor((a - d) * 60), se = Math.round(((a - d) * 60 - mi) * 60 * 100) / 100;
+    if (se >= 60) { se = 0; mi++; } if (mi >= 60) { mi = 0; d++; }
+    if (zdroj !== 'dms') { cast('d').value = `${deg < 0 ? '-' : ''}${d}`; cast('m').value = String(mi); cast('s').value = hezky(se, 2); }
+    const piNasobek = rad / Math.PI;
+    const radky: Record<string, string[]> = {
+      deg: [`gony = ${hezky(deg)} · 400 / 360 = ${hezky(deg)} / 0,9 = <b>${hezky(gon, 6)} gon</b>`,
+        `radiány = ${hezky(deg)} · π / 180 = <b>${hezky(rad, 6)} rad</b> (${hezky(piNasobek, 4)} π)`,
+        ''],
+      gon: [`stupně = ${hezky(gon)} · 360 / 400 = ${hezky(gon)} · 0,9 = <b>${hezky(deg, 6)}°</b>`,
+        `radiány = ${hezky(gon)} · π / 200 = <b>${hezky(rad, 6)} rad</b> (${hezky(piNasobek, 4)} π)`],
+      rad: [`stupně = ${hezky(rad)} · 180 / π = <b>${hezky(deg, 6)}°</b>`,
+        `gony = ${hezky(rad)} · 200 / π = <b>${hezky(gon, 6)} gon</b>`],
+      dms: [`stupně = ${d} + ${mi} / 60 + ${hezky(se)} / 3600 = <b>${hezky(deg, 6)}°</b>`,
+        `gony = ${hezky(deg, 6)} / 0,9 = <b>${hezky(gon, 6)} gon</b>`,
+        `radiány = ${hezky(deg, 6)} · π / 180 = <b>${hezky(rad, 6)} rad</b>`],
+    };
+    if (zdroj === 'deg') {
+      const zbytekMin = (a - Math.floor(a)) * 60;
+      radky.deg[2] = `minuty: ${hezky(a - Math.floor(a), 6)} · 60 = ${hezky(zbytekMin, 4)} → ${mi}′, vteřiny: ${hezky(zbytekMin - Math.floor(zbytekMin), 4)} · 60 = ${hezky(se)}″ → <b>${deg < 0 ? '−' : ''}${d}° ${mi}′ ${hezky(se)}″</b>`;
+    }
+    postup.innerHTML = radky[zdroj].map((r) => `<li>${r}</li>`).join('');
+  }
+  el.addEventListener('input', (e) => {
+    const p = (e.target as HTMLElement).closest('[data-pole]') as HTMLElement | null;
+    if (p) zdroj = p.dataset.pole!;
+    prepocti();
+  });
+  prepocti();
 }
